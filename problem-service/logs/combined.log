@@ -155,3 +155,5 @@
 {"level":"info","message":"Connected to DB","timestamp":"2026-07-06 19:37:15"}
 {"level":"info","message":"SERVER IS RUNNING AT PORT: 3000","timestamp":"2026-07-06 19:38:09"}
 {"level":"info","message":"Connected to DB","timestamp":"2026-07-06 19:38:09"}
+{"level":"info","message":"SERVER IS RUNNING AT PORT: 3000","timestamp":"2026-07-06 19:41:06"}
+{"level":"info","message":"Connected to DB","timestamp":"2026-07-06 19:41:06"}

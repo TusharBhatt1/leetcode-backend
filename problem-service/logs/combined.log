@@ -122,3 +122,5 @@
 {"level":"info","message":"Connected to DB","timestamp":"2026-07-06 19:05:53"}
 {"level":"info","message":"SERVER IS RUNNING AT PORT: 3000","timestamp":"2026-07-06 19:05:58"}
 {"level":"info","message":"Connected to DB","timestamp":"2026-07-06 19:05:59"}
+{"level":"info","message":"SERVER IS RUNNING AT PORT: 3000","timestamp":"2026-07-06 19:11:02"}
+{"level":"info","message":"Connected to DB","timestamp":"2026-07-06 19:11:02"}

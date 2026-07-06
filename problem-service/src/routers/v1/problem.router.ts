@@ -1,45 +1,39 @@
 import express from "express";
-import { ProblemController } from "../../controllers/problem.controller";
-import { ProblemService } from "../../services/problem.service";
-import { ProblemRepository } from "../../repository/problem.repository";
+import { ProblemController } from "src/controllers/problem.controller"
 import {
 	validateRequestBody,
 	validateRequestParams,
-} from "../../middlewares/validateRequestbody.middleware";
+} from "src/middlewares/validateRequestbody.middleware.js";
 import {
 	createProblemDTOSchema,
 	findByDifficultySchema,
 	updatedProblemDTOSchema,
-} from "../../validator/problem.validator";
+} from "src/validator/problem.validator.js";
 
 export const problemRouter = express.Router();
-
-const problemRepository = new ProblemRepository();
-const problemService = new ProblemService(problemRepository);
-const problemController = new ProblemController(problemService);
 
 problemRouter.post(
 	"/create",
 	validateRequestBody(createProblemDTOSchema),
-	problemController.createProblem,
+	ProblemController.createProblem,
 );
 
-problemRouter.get("/", problemController.getAllProblems);
+problemRouter.get("/", ProblemController.getAllProblems);
 
-problemRouter.get("/search", problemController.searchProblems);
+problemRouter.get("/search", ProblemController.searchProblems);
 
 problemRouter.get(
 	"/difficulty/:difficulty",
 	validateRequestParams(findByDifficultySchema),
-	problemController.findByDifficulty,
+	ProblemController.findByDifficulty,
 );
 
-problemRouter.get("/:id", problemController.getProblemById);
+problemRouter.get("/:id", ProblemController.getProblemById);
 
 problemRouter.patch(
 	"/:id",
 	validateRequestBody(updatedProblemDTOSchema),
-	problemController.updateProblem,
+	ProblemController.updateProblem,
 );
 
-problemRouter.delete("/:id", problemController.deleteProblem);
+problemRouter.delete("/:id", ProblemController.deleteProblem);

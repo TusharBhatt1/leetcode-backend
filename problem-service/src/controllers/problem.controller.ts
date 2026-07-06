@@ -1,35 +1,24 @@
 import { Request, Response } from "express";
-import { IProblemService } from "../services/problem.service";
+import { ProblemService } from "../services/problem.service";
+import { ProblemRepository } from "../repository/problem.repository";
 
-export interface IProblemController {
-	createProblem(req: Request, res: Response): Promise<void>;
-	getProblemById(req: Request, res: Response): Promise<void>;
-	getAllProblems(req: Request, res: Response): Promise<void>;
-	updateProblem(req: Request, res: Response): Promise<void>;
-	deleteProblem(req: Request, res: Response): Promise<void>;
-	findByDifficulty(req: Request, res: Response): Promise<void>;
-	searchProblems(req: Request, res: Response): Promise<void>;
-}
+const problemRepository = new ProblemRepository();
 
-export class ProblemController implements IProblemController {
-	private problemService: IProblemService;
+const problemService = new ProblemService(problemRepository);
 
-	constructor(problemService: IProblemService) {
-		this.problemService = problemService;
-	}
-
+export const ProblemController = {
 	async createProblem(req: Request, res: Response): Promise<void> {
-		const problem = await this.problemService.createProblem(req.body);
+		const problem = await problemService.createProblem(req.body);
 
 		res.status(201).json({
 			message: "Problem created successfully",
 			data: problem,
-		success: true,
+			success: true,
 		});
-	}
+	},
 
 	async getProblemById(req: Request, res: Response): Promise<void> {
-		const problem = await this.problemService.getProblemById(
+		const problem = await problemService.getProblemById(
 			req.params.id as string,
 		);
 
@@ -37,19 +26,19 @@ export class ProblemController implements IProblemController {
 			data: problem,
 			success: true,
 		});
-	}
+	},
 
 	async getAllProblems(req: Request, res: Response): Promise<void> {
-		const result = await this.problemService.getAllProblems();
+		const result = await problemService.getAllProblems();
 
 		res.status(200).json({
 			data: result,
 			success: true,
 		});
-	}
+	},
 
 	async updateProblem(req: Request, res: Response): Promise<void> {
-		const problem = await this.problemService.updateProblem(
+		const problem = await problemService.updateProblem(
 			req.params.id as string,
 			req.body,
 		);
@@ -59,19 +48,19 @@ export class ProblemController implements IProblemController {
 			data: problem,
 			success: true,
 		});
-	}
+	},
 
 	async deleteProblem(req: Request, res: Response): Promise<void> {
-		await this.problemService.deleteProblem(req.params.id as string);
+		await problemService.deleteProblem(req.params.id as string);
 
 		res.status(200).json({
 			message: "Problem deleted successfully",
 			success: true,
 		});
-	}
+	},
 
 	async findByDifficulty(req: Request, res: Response): Promise<void> {
-		const problems = await this.problemService.findByDifficulty(
+		const problems = await problemService.findByDifficulty(
 			req.params.difficulty as "easy" | "medium" | "hard",
 		);
 
@@ -79,16 +68,14 @@ export class ProblemController implements IProblemController {
 			data: problems,
 			success: true,
 		});
-	}
+	},
 
 	async searchProblems(req: Request, res: Response): Promise<void> {
-		const problems = await this.problemService.searchProblems(
-			req.query.q as string,
-		);
+		const problems = await problemService.searchProblems(req.query.q as string);
 
 		res.status(200).json({
 			data: problems,
 			success: true,
 		});
-	}
-}
+	},
+};

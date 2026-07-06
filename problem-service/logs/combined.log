@@ -45,3 +45,6 @@
 {"level":"info","message":"Connected to DB","timestamp":"2026-07-06 15:29:50"}
 {"level":"info","message":"SERVER IS RUNNING AT PORT: 3000","timestamp":"2026-07-06 15:29:53"}
 {"level":"info","message":"Connected to DB","timestamp":"2026-07-06 15:29:54"}
+{"level":"warn","message":"Mongo DB disconnected","timestamp":"2026-07-06 16:03:11"}
+{"level":"info","message":"SERVER IS RUNNING AT PORT: 3000","timestamp":"2026-07-06 16:33:58"}
+{"level":"info","message":"Connected to DB","timestamp":"2026-07-06 16:33:59"}

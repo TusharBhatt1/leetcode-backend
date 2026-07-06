@@ -1,10 +1,10 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 export interface ITestCase {
 	input: string;
 	output: string;
 }
-export interface IProblem extends Document {
+export interface IProblem {
 	title: string;
 	description: string;
 	difficulty: "easy" | "medium" | "hard";

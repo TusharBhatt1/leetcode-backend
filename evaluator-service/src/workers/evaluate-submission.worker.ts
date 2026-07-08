@@ -4,11 +4,13 @@ import { createNewRedisConnection } from "@/config/redis.config";
 
 async function setupEvaluationWorker() {
 	const worker = new Worker(
-		"evalute-submission",
+		"submission",
 		async (job) => {
-			logger.info(`Proccessing job ${job.data}`);
+			logger.info(`Proccessing job ${job.id}`);
+			const { id: submissionId, problem, code, language } = job.data;
+		
 		},
-		{   
+		{
 			//@ts-ignore
 			connection: createNewRedisConnection(),
 		},

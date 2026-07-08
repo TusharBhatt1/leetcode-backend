@@ -26,6 +26,7 @@ export const ProblemController = {
 				data: problem,
 				success: true,
 			});
+			return;
 		}
 		res.status(404).json({
 			data: null,

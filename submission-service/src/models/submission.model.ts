@@ -22,6 +22,7 @@ export interface ISubmission {
 	status: SubmissionStatus;
 	createdAt: Date;
 	updatedAt: Date;
+	id?:string;
 }
 
 const submissionSchema = new Schema<ISubmission>(

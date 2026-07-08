@@ -1,12 +1,13 @@
-import { redisConfig } from "@/config";
 import { logger } from "@/config/logger.config";
-import { redisClient } from "@/config/redis.config";
-import { ISubmission } from "@/models/submission.model";
+import { SubmissionLanguage } from "@/models/submission.model";
 import { submissionQueue } from "@/queues/submission.queue";
 import { IProblem } from "apis/problem.api";
 
-export interface ISubmissionJob extends ISubmission {
+export interface ISubmissionJob {
 	problem: IProblem;
+	code: string;
+	language: SubmissionLanguage;
+	id: string;
 }
 
 export async function addSubmissionJob(
@@ -22,4 +23,3 @@ export async function addSubmissionJob(
 		return null;
 	}
 }
-

@@ -2,7 +2,7 @@ import { logger } from "@/config/logger.config";
 import { createNewRedisConnection } from "@/config/redis.config";
 import { Queue } from "bullmq";
 
-export const submissionQueue = new Queue("evalute-submission", {
+export const submissionQueue = new Queue("submission", {
 	//@ts-ignore
 	connection: createNewRedisConnection(),
 	defaultJobOptions: {
@@ -21,13 +21,3 @@ submissionQueue.on("error", (error) => {
 submissionQueue.on("waiting", (job) => {
 	logger.info(`Submission job waiting: ${job}`);
 });
-
-// export const submissionQuequeEvents = new QueueEvents("submission");
-
-// submissionQuequeEvents.on("completed", ({ jobId }) => {
-// 	logger.error(`Job ${jobId} completed`);
-// });
-
-// submissionQuequeEvents.on("failed", ({ jobId }, err) => {
-// 	logger.error(`Job ${jobId} failed: ${err}`);
-// });

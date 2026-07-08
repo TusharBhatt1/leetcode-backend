@@ -32,9 +32,12 @@ export class SubmissionService implements ISubmissionService {
 		// => save the payload to DB
 		const submission = await this.submissionRepository.create(submissionData);
 		// => add submission to bull queue
+
 		const jobId = await addSubmissionJob({
-			...submission,
-			problem, 
+			id: submission.id!,
+			code: submission.code,
+			language: submission.language,
+			problem,
 		});
 
 		logger.info(`Submission job added with jobID: ${jobId}`);

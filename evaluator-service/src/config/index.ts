@@ -12,5 +12,6 @@ export const redisConfig= {
 
 
 export const crossServiceConfig={
-	PROBLEM_SERVICE:process.env.PROBLEM_SERVICE
+	PROBLEM_SERVICE:process.env.PROBLEM_SERVICE,
+	SUBMISSION_SERVICE:process.env.SUBMISSION_SERVICE
 }

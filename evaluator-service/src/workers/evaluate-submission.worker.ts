@@ -6,6 +6,7 @@ import { JAVASCRIPT_IMAGE } from "@/docker/constants";
 import { getWrapperJavascriptCode } from "@/docker/utils/wrappedCode.util";
 import { Writable } from "stream";
 import { DockerLogCapturer } from "./utils/capture-docker-logs";
+import { updateSubmissionStatus } from "@/apis/updateSubmissionStatus";
 
 async function setupEvaluationWorker() {
 	const worker = new Worker(
@@ -28,11 +29,31 @@ async function setupEvaluationWorker() {
 			const stream = await exec?.start({});
 
 			const dockerCapture = new DockerLogCapturer();
-			const { stdout } = await dockerCapture.capture(container, stream);
+			const { stdout, stderr } = await dockerCapture.capture(container, stream);
+			const result = JSON.parse(stdout) as {
+				success: boolean;
+				results: {
+					input: string;
+					expected: any;
+					actual: any;
+					passed: boolean;
+					error?:{
+						name:string,
+						message:string
+					}
+				}[];
+			};
 
-			logger.info(stdout);
+			console.log(stdout)
+			console.log(stderr)
+
 			await container?.kill();
 			await container?.remove();
+
+			const allPassed = result.results.every((r) => r.passed);
+			const error=result.results.some((r)=>r.error)
+
+			await updateSubmissionStatus(allPassed, error, submissionId);
 		},
 
 		{

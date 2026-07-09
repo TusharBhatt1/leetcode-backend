@@ -3,6 +3,7 @@ import {
 	SubmissionLanguage,
 	SubmissionStatus,
 } from "@/models/submission.model";
+import mongoose from "mongoose";
 
 export const createSubmissionSchema = z.object({
 	problemId: z.string().min(1, "Problem ID is required"),
@@ -14,11 +15,18 @@ export const createSubmissionSchema = z.object({
 	}),
 });
 
-export const updateSubmissionStatusSchema = z.object({
+export const updateSubmissionStatusBodySchema = z.object({
 	status: z.enum(SubmissionStatus, {
 		error: () => ({ message: "Invalid submission status" }),
 	}),
 });
+export const updateSubmissionStatusParamSchema = z.object({
+	id: z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
+		message: "Invalid MongoDB ObjectId",
+	}),
+});
+
+export const getSubmissionByIdSchema = updateSubmissionStatusParamSchema;
 
 export const findSubmissionByIdSchema = z.object({
 	id: z.string().min(1, "Submission ID is required"),

@@ -5,6 +5,7 @@ import { createDockerContainer } from "@/docker/utils/createContainer.util";
 import { JAVASCRIPT_IMAGE } from "@/docker/constants";
 import { getWrapperJavascriptCode } from "@/docker/utils/wrappedCode.util";
 import { Writable } from "stream";
+import { DockerLogCapturer } from "./utils/capture-docker-logs";
 
 async function setupEvaluationWorker() {
 	const worker = new Worker(
@@ -26,62 +27,10 @@ async function setupEvaluationWorker() {
 
 			const stream = await exec?.start({});
 
-			let stdoutLogs = "";
-			let stderrLogs = "";
+			const dockerCapture = new DockerLogCapturer();
+			const { stdout } = await dockerCapture.capture(container, stream);
 
-			const stdoutTracker = new Writable({
-				write(chunk, encoding, callback) {
-					stdoutLogs += chunk.toString();
-					callback();
-				},
-			});
-
-			const stderrTracker = new Writable({
-				write(chunk, encoding, callback) {
-					stderrLogs += chunk.toString();
-					callback();
-				},
-			});
-
-			await new Promise<void>((resolve, reject) => {
-				// 1. Declare the timer variable
-				let timer: any;
-
-				// 2. Define a cleanup function to prevent memory leaks
-				const cleanup = () => {
-					clearTimeout(timer);
-					stream?.removeListener("end", onEnd);
-					stream?.removeListener("close", onEnd);
-					stream?.removeListener("error", onError);
-				};
-
-				const onEnd = () => {
-					cleanup();
-					resolve();
-				};
-
-				const onError = (err: any) => {
-					cleanup();
-					reject(err || new Error("Stream error"));
-				};
-
-				// 3. Set the 10-second timeout
-				timer = setTimeout(() => {
-					cleanup();
-					reject(new Error("Docker stream timed out after 10000ms"));
-				}, 10000);
-
-				// 4. Attach listeners and execute
-				stream?.on("end", onEnd);
-				stream?.on("close", onEnd);
-				stream?.on("error", onError);
-
-				container?.modem.demuxStream(stream, stdoutTracker, stderrTracker);
-			});
-
-			logger.info(stdoutLogs);
-			logger.error(stderrLogs);
-
+			logger.info(stdout);
 			await container?.kill();
 			await container?.remove();
 		},

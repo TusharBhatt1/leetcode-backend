@@ -16,7 +16,7 @@ const limiter = rateLimit({
 	legacyHeaders: false,
 });
 
-app.use(limiter);
+// app.use(limiter);
 
 // ROUTES
 app.use("/api/v1", v1Router);

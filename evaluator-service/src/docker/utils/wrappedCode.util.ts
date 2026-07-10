@@ -33,16 +33,39 @@ export function getWrapperJavascriptCode(problem: IProblem, code: string) {
 	const { function: fn, testCases } = problem;
 
 	return `
-${code}
-
 const testCases = ${JSON.stringify(testCases)};
 const results = [];
+
+let userFunction;
+
+try {
+	const module = new Function(\`
+${code}
+return ${fn.name};
+\`);
+
+	userFunction = module();
+
+	if (typeof userFunction !== "function") {
+		throw new Error("Function '${fn.name}' not found.");
+	}
+} catch (err) {
+	console.log(JSON.stringify({
+		success: false,
+		error: {
+			name: err.name,
+			message: err.message,
+		},
+		results,
+	}));
+	process.exit(0);
+}
 
 try {
 	for (const testCase of testCases) {
 		try {
 			const args = eval(\`[\${testCase.input}]\`);
-			const actual = ${fn.name}(...args);
+			const actual = userFunction(...args);
 			const expected = JSON.parse(testCase.output);
 
 			results.push({
@@ -58,7 +81,6 @@ try {
 				error: {
 					name: err.name,
 					message: err.message,
-                    error:err
 				},
 			});
 		}
@@ -74,7 +96,6 @@ try {
 		error: {
 			name: err.name,
 			message: err.message,
-            error:err
 		},
 		results,
 	}));

@@ -11,10 +11,28 @@ export enum SubmissionStatus {
 }
 
 export async function updateSubmissionStatus(
-	allPassed: boolean,
-	error: boolean,
+	result: {
+		success: boolean;
+		error?: {
+			name: string;
+			message: string;
+		};
+		results: {
+			input: string;
+			expected: any;
+			actual: any;
+			passed: boolean;
+			error?: {
+				name: string;
+				message: string;
+			};
+		}[];
+	},
 	submissionId: string,
 ) {
+	const allPassed = result.results.every((r) => r.passed);
+	const error = !!result?.error || result.results.some((r) => r.error);
+
 	try {
 		const status = error
 			? SubmissionStatus.ERROR

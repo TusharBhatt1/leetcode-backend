@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { SubmissionRepository } from "@/repositories/submission.repository";
 import { SubmissionService } from "@/services/submission.service";
-import { SubmissionStatus } from "@/models/submission.model";
+import { ISubmissionResult, SubmissionStatus } from "@/models/submission.model";
 
 const submissionRepository = new SubmissionRepository();
 const submissionService = new SubmissionService(submissionRepository);
@@ -19,7 +19,7 @@ export const SubmissionController = {
 			res.status(400).json({
 				message:
 					error instanceof Error ? error.message : "Something went wrong!",
-                    success:false
+				success: false,
 			});
 		}
 	},
@@ -64,6 +64,28 @@ export const SubmissionController = {
 		res.status(200).json({
 			message: "Submission status updated successfully",
 			data: submission,
+			success: true,
+		});
+	},
+
+	async addResult(req: Request, res: Response): Promise<void> {
+		const updated = await submissionService.addResult(
+			req.params.id as string,
+			req.body.status as SubmissionStatus,
+			req.body.result as ISubmissionResult,
+		);
+
+		if (!updated) {
+			res.status(400).json({
+				message: "Submission not found or result already exists",
+				success: false,
+			});
+			return;
+		}
+
+		res.status(200).json({
+			message: "Submission result added successfully",
+			data: updated,
 			success: true,
 		});
 	},

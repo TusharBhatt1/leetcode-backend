@@ -10,7 +10,7 @@ export enum SubmissionStatus {
 	ERROR = "error", // Compilation or runtime/system error
 }
 
-export async function updateSubmissionStatus(
+export async function updateSubmissionResult(
 	result: {
 		success: boolean;
 		error?: {
@@ -41,9 +41,10 @@ export async function updateSubmissionStatus(
 				: SubmissionStatus.WRONG_ANSWER;
 
 		await axios.post(
-			`${crossServiceConfig.SUBMISSION_SERVICE}/api/v1/submission/update-status/${submissionId}`,
+			`${crossServiceConfig.SUBMISSION_SERVICE}/api/v1/submission/add-result/${submissionId}`,
 			{
 				status,
+				result
 			},
 		);
 

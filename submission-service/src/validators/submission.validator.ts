@@ -27,6 +27,7 @@ export const updateSubmissionStatusParamSchema = z.object({
 });
 
 export const getSubmissionByIdSchema = updateSubmissionStatusParamSchema;
+export const addResultParamSchema = updateSubmissionStatusParamSchema;
 
 export const findSubmissionByIdSchema = z.object({
 	id: z.string().min(1, "Submission ID is required"),
@@ -34,6 +35,35 @@ export const findSubmissionByIdSchema = z.object({
 
 export const findSubmissionsByProblemIdSchema = z.object({
 	problemId: z.string().min(1, "Problem ID is required"),
+});
+
+const submissionResultItemSchema = z.object({
+	input: z.string(),
+	expected: z.unknown().optional(),
+	actual: z.unknown().optional(),
+	passed: z.boolean(),
+	error: z
+		.object({
+			name: z.string(),
+			message: z.string(),
+		})
+		.optional(),
+});
+
+export const submissionResultSchema = z.object({
+	success: z.boolean(),
+	results: z.array(submissionResultItemSchema),
+	error: z
+		.object({
+			name: z.string(),
+			message: z.string(),
+		})
+		.optional(),
+});
+
+export const addResultBodySchema = z.object({
+	status: z.enum(SubmissionStatus),
+	result: submissionResultSchema,
 });
 
 // export type CreateSubmissionDto = z.infer<typeof createSubmissionSchema>;

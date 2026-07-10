@@ -4,6 +4,8 @@ import {
 	validateRequestParams,
 } from "@/middlewares/submission.middleware";
 import {
+	addResultBodySchema,
+	addResultParamSchema,
 	createSubmissionSchema,
 	getSubmissionByIdSchema,
 	updateSubmissionStatusBodySchema,
@@ -20,12 +22,18 @@ submissionRouter.post(
 );
 submissionRouter.post(
 	"/update-status/:id",
-	validateRequestBody(updateSubmissionStatusBodySchema),
 	validateRequestParams(updateSubmissionStatusParamSchema),
+	validateRequestBody(updateSubmissionStatusBodySchema),
 	SubmissionController.updateSubmissionStatus,
 );
 submissionRouter.get(
 	"/:id",
 	validateRequestParams(getSubmissionByIdSchema),
 	SubmissionController.getSubmissionById,
+);
+submissionRouter.post(
+	"/add-result/:id",
+	validateRequestParams(addResultParamSchema),
+	validateRequestBody(addResultBodySchema),
+	SubmissionController.addResult,
 );

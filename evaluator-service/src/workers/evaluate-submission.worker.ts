@@ -5,7 +5,7 @@ import { createDockerContainer } from "@/docker/utils/createContainer.util";
 import { JAVASCRIPT_IMAGE } from "@/docker/constants";
 import { getWrapperJavascriptCode } from "@/docker/utils/wrappedCode.util";
 import { DockerLogCapturer } from "./utils/capture-docker-logs";
-import { updateSubmissionStatus } from "@/apis/updateSubmissionStatus";
+import { updateSubmissionResult } from "@/apis/updateSubmissionResult.api";
 
 //TODO: SYNTAX ERROR
 async function setupEvaluationWorker() {
@@ -40,7 +40,7 @@ async function setupEvaluationWorker() {
 
 			const result = JSON.parse(stdout)
 
-			await updateSubmissionStatus(result, submissionId);
+			await updateSubmissionResult(result, submissionId);
 		},
 
 		{

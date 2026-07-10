@@ -15,15 +15,68 @@ export enum SubmissionLanguage {
 	// PYTHON = "python",
 	// JAVA = "java",
 }
+
+export interface ISubmissionResult {
+	success: boolean;
+	results: {
+		input: string;
+		expected?: unknown;
+		actual?: unknown;
+		passed: boolean;
+		error?: {
+			name: string;
+			message: string;
+		};
+	}[];
+	error?: {
+		name: string;
+		message: string;
+	};
+}
+
 export interface ISubmission {
 	problemId: string;
 	code: string;
 	language: SubmissionLanguage;
 	status: SubmissionStatus;
+	result?: ISubmissionResult;
 	createdAt: Date;
 	updatedAt: Date;
-	id?:string;
+	id?: string;
 }
+
+const resultSchema = new Schema(
+	{
+		success: {
+			type: Boolean,
+			required: true,
+			default: false,
+		},
+		results: [
+			{
+				input: {
+					type: String,
+					required: true,
+				},
+				expected: Schema.Types.Mixed,
+				actual: Schema.Types.Mixed,
+				passed: {
+					type: Boolean,
+					required: true,
+				},
+				error: {
+					name: String,
+					message: String,
+				},
+			},
+		],
+		error: {
+			name: String,
+			message: String,
+		},
+	},
+	{ _id: false },
+);
 
 const submissionSchema = new Schema<ISubmission>(
 	{
@@ -46,6 +99,10 @@ const submissionSchema = new Schema<ISubmission>(
 			required: [true, "Status is required"],
 			default: SubmissionStatus.PENDING,
 		},
+		result: {
+			type: resultSchema,
+			default: undefined,
+		},
 	},
 	{
 		timestamps: true,
@@ -60,7 +117,7 @@ const submissionSchema = new Schema<ISubmission>(
 	},
 );
 
-submissionSchema.index({ problemId: 1 });
+submissionSchema.index({ problemId: 1 })
 
 export const SubmissionModel = model<ISubmission>(
 	"submission",

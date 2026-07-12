@@ -29,7 +29,7 @@ const LoginController = {
 		const { _id: userId, name, role } = userExists;
 
 		try {
-			const passwordMatch = await bcrypt.compare(password, userExists.password);
+			const passwordMatch = bcrypt.compare(password, userExists.password);
 
 			if (!passwordMatch) {
 				throw new Error("Incorrect password");
@@ -45,6 +45,7 @@ const LoginController = {
 				authConfig.JWT_PRIVATE_KEY!,
 				{
 					algorithm: "RS256",
+                    expiresIn:"1D"
 				},
 			);
 

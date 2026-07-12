@@ -7,7 +7,7 @@ export interface ISignUpRepository {
 
 export class SignUpRepository implements ISignUpRepository {
 	async signup(userDetails: IAuthUserDetails): Promise<IAuthUserDetails> {
-		return await UserModel.create(userDetails);
-	
+		const user = await UserModel.create(userDetails);
+		return user;
 	}
 }

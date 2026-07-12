@@ -9,15 +9,17 @@ export interface IAuthUserDetails {
 	email: string;
 	password: string;
 	role: UserRole;
+	id?: string;
 }
-const LoginController = {
+
+export const LoginController = {
 	async login(req: Request, res: Response) {
 		const user = req.body;
 		const { email, password } = user as IAuthUserDetails;
 
 		const [userExists] = await UserModel.find({
 			email,
-		});
+		}).select("+password");
 
 		if (!userExists) {
 			res.status(404).json({
@@ -26,32 +28,27 @@ const LoginController = {
 			});
 		}
 
-		const { _id: userId, name, role } = userExists;
-
 		try {
-			const passwordMatch = bcrypt.compare(password, userExists.password);
+			const passwordMatch = await bcrypt.compare(password, userExists.password);
 
 			if (!passwordMatch) {
 				throw new Error("Incorrect password");
 			}
 
-			const token = jwt.sign(
-				{
-					userId,
-					name,
-					role,
-					email,
-				},
-				authConfig.JWT_PRIVATE_KEY!,
-				{
-					algorithm: "RS256",
-                    expiresIn:"1D"
-				},
-			);
+			const payload = {
+				id: userExists.id,
+				name: userExists.name,
+				role: userExists.role,
+			};
+
+			const token = jwt.sign(payload, authConfig.JWT_PRIVATE_KEY!, {
+				algorithm: "RS256",
+				expiresIn: "1D",
+			});
 
 			res.cookie("leetcode_user", token);
 			res.status(200).json({
-				message: "Login in successfull",
+				message: "Logged in successfull",
 				success: true,
 			});
 		} catch (error) {

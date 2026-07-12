@@ -7,7 +7,6 @@ export interface IAuthResponse {
 	message?: string;
 	user?: IAuthUserDetails;
 	success: boolean;
-    id?:string
 }
 
 interface ISignUpService {

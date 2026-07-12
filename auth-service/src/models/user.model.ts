@@ -1,3 +1,4 @@
+import { IAuthUserDetails } from "@/controllers/login.controller";
 import mongoose from "mongoose";
 
 export enum UserRole {
@@ -41,11 +42,11 @@ const userSchema = new mongoose.Schema(
 	{
 		timestamps: true,
 		toJSON: {
-			transform: (_doc, ret) => {
+			transform: (_doc, ret: IAuthUserDetails & { _id: any; __v?: number }) => {
 				delete (ret as any)?.__v;
 				(ret as any).id = ret._id;
 				delete (ret as any)?._id;
-                delete (ret as any)?.password
+				delete (ret as any)?.password;
 				return ret;
 			},
 		},

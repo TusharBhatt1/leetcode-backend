@@ -24,6 +24,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useSubmitSolution } from "@/app/hooks/useSubmitSolution";
 import { useSubmission } from "@/app/hooks/useSubmission";
+import { useRunCode } from "@/app/hooks/useRunCode";
+import { useRunResult } from "@/app/hooks/useRunResult";
 
 const LANGUAGES = [
   { label: "JavaScript", value: "javascript" },
@@ -37,15 +39,25 @@ interface ProblemFunction {
 }
 
 export enum SubmissionStatus {
-	PENDING = "pending", // Job is queued
-	RUNNING = "running", // Code is currently executing
-	ACCEPTED = "accepted", // Passed all test cases
-	WRONG_ANSWER = "wrong_answer", // Failed one or more test cases
-	ERROR = "error", // Compilation or runtime/system error
+  PENDING = "pending", // Job is queued
+  RUNNING = "running", // Code is currently executing
+  ACCEPTED = "accepted", // Passed all test cases
+  WRONG_ANSWER = "wrong_answer", // Failed one or more test cases
+  ERROR = "error", // Compilation or runtime/system error
+}
+
+// ⚠️ Run-result status casing differs from SubmissionStatus (uppercase here vs.
+// lowercase there). Kept as-is to match the run hook's actual response — worth
+// confirming with the backend whether this is intentional or should be aligned.
+export enum RunStatus {
+  PENDING = "PENDING",
+  FAILED = "FAILED",
+  COMPLETED = "COMPLETED",
 }
 
 // Matches the real API shape: result.results[] with input / expected (any) / passed,
-// and an optional `actual` (not currently returned by the API, rendered defensively).
+// and an optional `actual` (not currently returned by the submission API, rendered
+// defensively). The run endpoint is assumed to return the same shape for sample cases.
 interface TestCaseResult {
   input: string;
   expected: unknown;
@@ -74,6 +86,18 @@ function formatValue(value: unknown): string {
   if (value === undefined) return "Not returned";
   if (typeof value === "string") return value;
   return JSON.stringify(value);
+}
+
+// Defensively normalizes the run result into TestCaseResult[], since the run
+// endpoint's shape isn't fully confirmed yet. Handles either
+// { results: TestCaseResult[] } or a bare TestCaseResult[] at the top level.
+function extractResults(result: unknown): TestCaseResult[] {
+  if (!result) return [];
+  if (Array.isArray(result)) return result as TestCaseResult[];
+  if (typeof result === "object" && Array.isArray((result as any).results)) {
+    return (result as any).results as TestCaseResult[];
+  }
+  return [];
 }
 
 // Renders the console area: idle message, status text, or the result breakdown
@@ -138,6 +162,10 @@ export default function ProblemPage() {
   const { data: submission } = useSubmission(submissionId);
   const { data: problem, isLoading, isError } = useProblem(id);
 
+  const [runId, setRunId] = useState<string>();
+  const { mutate: runCode, isPending: isRunPending } = useRunCode();
+  const { data: runResult } = useRunResult(runId);
+
   const [language, setLanguage] = useState("javascript");
   const [code, setCode] = useState<string>("");
   const { mutate: submitSolution, isPending: isSubmitting } = useSubmitSolution();
@@ -145,7 +173,6 @@ export default function ProblemPage() {
   const [consoleMessage, setConsoleMessage] = useState<string>("Run your code...");
   const [testResults, setTestResults] = useState<TestCaseResult[] | null>(null);
   const [showResults, setShowResults] = useState(false);
-  const [isRunning, setIsRunning] = useState(false);
 
   // True from the moment a submission is queued until it reaches a terminal status.
   // Derived from the submission's own status, not the query's loading state —
@@ -156,6 +183,11 @@ export default function ProblemPage() {
     (!submission ||
       submission.status === SubmissionStatus.PENDING ||
       submission.status === SubmissionStatus.RUNNING);
+
+  // Same pattern for the Run flow: stays true from the moment a run is queued
+  // until the poll comes back COMPLETED or FAILED.
+  const isCodeRunning =
+    !!runId && (!runResult || runResult.status === RunStatus.PENDING);
 
   useEffect(() => {
     if (!submission) return;
@@ -175,8 +207,8 @@ export default function ProblemPage() {
     }
 
     // Terminal states: ACCEPTED | WRONG_ANSWER | ERROR
-    const results: TestCaseResult[] = submission.result?.results ?? [];
-    const passedCount = results.filter((r) => r.passed).length;
+    const results = submission.result?.results ?? [];
+    const passedCount = results.filter((r: TestCaseResult) => r.passed).length;
     const allPassed = status === SubmissionStatus.ACCEPTED;
 
     setTestResults(results);
@@ -198,6 +230,44 @@ export default function ProblemPage() {
   }, [submission]);
 
   useEffect(() => {
+    if (!runResult) return;
+
+    switch (runResult.status) {
+      case RunStatus.PENDING:
+        setShowResults(false);
+        setConsoleMessage("Running...");
+        break;
+
+      case RunStatus.FAILED:
+        setShowResults(false);
+        setConsoleMessage(runResult.error ?? "Execution failed.");
+        toast.error("Run failed", {
+          description: runResult.error ?? "Your code threw an error during execution.",
+        });
+        break;
+
+      case RunStatus.COMPLETED: {
+        const results = extractResults(runResult.result);
+        const passedCount = results.filter((r) => r.passed).length;
+
+        setTestResults(results);
+        setShowResults(true);
+
+        if (results.length > 0 && passedCount === results.length) {
+          toast.success("Sample cases passed! 🎉", {
+            description: `${passedCount}/${results.length} passed`,
+          });
+        } else if (results.length > 0) {
+          toast.error("Some sample cases failed", {
+            description: `${passedCount}/${results.length} passed`,
+          });
+        }
+        break;
+      }
+    }
+  }, [runResult]);
+
+  useEffect(() => {
     if (problem?.function) {
       setCode(buildSnippet(language, problem.function));
     }
@@ -211,18 +281,24 @@ export default function ProblemPage() {
     return <div className="container mx-auto py-8">Problem not found.</div>;
   }
 
-  const handleRun = async () => {
-    setIsRunning(true);
+  const handleRun = () => {
     setShowResults(false);
+    setTestResults(null);
     setConsoleMessage("Running...");
-    try {
-      // TODO: wire this up to your sandboxed execution service
-      setConsoleMessage("(stub) Execution result will appear here.");
-    } catch (err) {
-      setConsoleMessage(err instanceof Error ? err.message : "Execution failed.");
-    } finally {
-      setIsRunning(false);
-    }
+
+    runCode(
+      { problemId: problem.id, language, code },
+      {
+        onSuccess: ({ runId }) => {
+          setRunId(runId);
+        },
+        onError: (error: any) => {
+          const msg = error?.response?.data?.message ?? "Failed to start run.";
+          setConsoleMessage(msg);
+          toast.error("Run failed", { description: msg });
+        },
+      }
+    );
   };
 
   const handleSubmit = () => {
@@ -343,8 +419,12 @@ export default function ProblemPage() {
                   </Select>
 
                   <div className="flex gap-2">
-                    <Button variant="outline" onClick={handleRun} disabled={isRunning}>
-                      Run
+                    <Button
+                      variant="outline"
+                      onClick={handleRun}
+                      disabled={isRunPending || isCodeRunning}
+                    >
+                      {isRunPending || isCodeRunning ? "Running..." : "Run"}
                     </Button>
                     <Button
                       onClick={handleSubmit}

@@ -34,15 +34,20 @@ const testSchema = new mongoose.Schema<ITestCase>(
 	},
 );
 
-const functionSchema = new mongoose.Schema({
-	name: {
-		type: String,
-		required: [true, "Function name is required"],
-		maxLength: [100, "Function name must be less than 25 characters"],
-		trim: true,
+const functionSchema = new mongoose.Schema(
+	{
+		name: {
+			type: String,
+			required: [true, "Function name is required"],
+			maxLength: [100, "Function name must be less than 25 characters"],
+			trim: true,
+		},
+		parameters: [String],
 	},
-	parameters: [String],
-});
+	{
+		_id: false,
+	},
+);
 
 const problemSchema = new Schema<IProblem>(
 	{

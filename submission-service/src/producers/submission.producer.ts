@@ -15,7 +15,9 @@ export async function addSubmissionJob(
 ): Promise<string | null> {
 	try {
 		const job = await submissionQueue.add("evalute-submission", submission);
-		logger.info(`Job added to submission queque: ${submission}`);
+		logger.info(
+			`Job added to submission queue, ID: ${job.id}`,
+		);
 
 		return job.id || null;
 	} catch (error) {

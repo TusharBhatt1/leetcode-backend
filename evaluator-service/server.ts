@@ -2,6 +2,7 @@ import express from "express";
 import { logger } from "./src/config/logger.config";
 import { v1Router } from "./src/routers/index.router";
 import { startEvaluationWorkers } from "./src/workers/evaluate-submission.worker";
+import { startRunWorker } from "./src/workers/evaluate-run.worker";
 import { pullAllImages } from "./src/docker/utils/pullImage.util";
 
 const PORT = process.env.PORT || 3001;
@@ -17,6 +18,9 @@ app.get("/", (_, res) => {
 
 app.listen(PORT, async () => {
 	logger.info(`SERVER IS RUNNING AT PORT: ${PORT}`);
-	await startEvaluationWorkers();
-	await pullAllImages();
+	await Promise.all([
+		startEvaluationWorkers(),
+		startRunWorker(),
+		pullAllImages(),
+	]);
 });

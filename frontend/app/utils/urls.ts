@@ -1,0 +1,4 @@
+export const backend = {
+	PROBLEM_SERVICE: process.env.NEXT_PUBLIC_PROBLEM_SERVICE,
+	SUBMISSION_SERVICE: process.env.SUBMISSION_SERVICE,
+};

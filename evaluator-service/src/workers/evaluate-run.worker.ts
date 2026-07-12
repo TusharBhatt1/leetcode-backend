@@ -9,11 +9,27 @@ async function setupRunWorker() {
 		async (job) => {
 			logger.info(`Proccessing Run job ${job.id}`);
 			const { problem, code, language } = job.data;
+			try {
+				const result = await initializeContainerAndExecuteCode({
+					problem,
+					code,
+				});
 
-			const result = await initializeContainerAndExecuteCode({ problem, code });
-
-			await redisClient.set(`run_${job.id}`, JSON.stringify(result), "EX", 120);
-			logger.info(`run ${job.id} result added to Redis`);
+				await redisClient.set(
+					`run_${job.id}`,
+					JSON.stringify(result),
+					"EX",
+					120,
+				);
+				logger.info(`run ${job.id} result added to Redis`);
+			} catch (error) {
+				await redisClient.set(
+					`run_${job.id}`,
+					"FAILED",
+					"EX",
+					120,
+				);
+			}
 		},
 		{
 			//@ts-ignore
@@ -25,7 +41,7 @@ async function setupRunWorker() {
 }
 
 async function startRunWorker() {
-    await setupRunWorker()
-} 
+	await setupRunWorker();
+}
 
-export {startRunWorker}
+export { startRunWorker };

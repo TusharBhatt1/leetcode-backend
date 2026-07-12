@@ -26,9 +26,23 @@ export const RunController = {
 	},
 	async runResult(req: Request, res: Response) {
 		const result = await redisClient.get(req.params.id as string);
+		if (result === "PENDING") {
+			return res.status(200).json({
+				status: "PENDING",
+				result: null,
+			});
+		}
 
-		res.status(200).json({
-			data: JSON.parse(result!),
+		if (result === "FAILED") {
+			return res.status(200).json({
+				status: "FAILED",
+				result: null,
+			});
+		}
+
+		return res.status(200).json({
+			status: "COMPLETED",
+			result: JSON.parse(result!),
 		});
 	},
 };

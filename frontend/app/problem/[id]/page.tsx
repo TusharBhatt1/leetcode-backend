@@ -29,8 +29,8 @@ import { useRunResult } from "@/app/hooks/useRunResult";
 
 const LANGUAGES = [
   { label: "JavaScript", value: "javascript" },
-  { label: "TypeScript", value: "typescript" },
-  { label: "Python", value: "python" },
+  // { label: "TypeScript", value: "typescript" },
+  // { label: "Python", value: "python" },
 ];
 
 interface ProblemFunction {

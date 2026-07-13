@@ -1,4 +1,4 @@
-import { api } from "@/app/lib/axios";
+import { apiClient } from "@/app/lib/axios";
 
 interface GetProblemsParams {
   search: string;
@@ -11,7 +11,7 @@ export async function getProblems({
   cursor,
   direction,
 }: GetProblemsParams) {
-  const response = await api.get("/problem", {
+  const response = await apiClient.get("/problem", {
     params: {
       search,
       cursor,
@@ -27,7 +27,7 @@ export async function getProblems({
 
 
 export async function getProblem(id: string) {
-  const response = await api.get(`/problem/${id}`);
+  const response = await apiClient.get(`/problem/${id}`);
 
   return response.data.data;
 }

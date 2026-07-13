@@ -1,4 +1,4 @@
-import { api } from "@/app/lib/axios";
+import { apiClient } from "@/app/lib/axios";
 export type SubmissionLanguage =
   | "javascript"
   | "typescript"
@@ -23,9 +23,7 @@ export interface SubmitSolutionResponse {
 export async function submitSolution(
   payload: SubmitSolutionRequest
 ): Promise<SubmitSolutionResponse> {
-  const { data } = await api.post("/submit", payload,{
-    baseURL:"http://localhost:3001/api/v1/submission"
-  });
+  const { data } = await apiClient.post("/submit", payload);
 
   return data;
 }

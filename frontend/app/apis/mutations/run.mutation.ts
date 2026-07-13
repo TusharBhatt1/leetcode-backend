@@ -1,6 +1,6 @@
 // apis/mutations/run.ts
 
-import { api } from "@/app/lib/axios";
+import { apiClient } from "@/app/lib/axios";
 
 export interface RunCodeRequest {
   problemId: string;
@@ -16,11 +16,9 @@ export interface RunCodeResponse {
 }
 
 export async function runCode(payload: RunCodeRequest) {
-  const { data } = await api.post<RunCodeResponse>(
+  const { data } = await apiClient.post<RunCodeResponse>(
     "/submission/run",
-    payload,{
-        baseURL:"http://localhost:3001/api/v1"
-    }
+    payload
   );
 
   return data;

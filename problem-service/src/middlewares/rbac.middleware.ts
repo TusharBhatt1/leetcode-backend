@@ -33,7 +33,7 @@ export async function rbacMiddlewWare(
 		next();
 	} catch (error) {
 		return res.status(401).json({
-			message: error instanceof Error ? error.message : "Unauthenticated",
+			message: error instanceof Error ? error.message : "Unauthenticated, please login or signup.",
 			success: false,
 		});
 	}

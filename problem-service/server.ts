@@ -3,12 +3,14 @@ import cors from "cors";
 import { logger } from "./src/config/logger.config";
 import { connectDB } from "./src/config/db.config";
 import { v1Router } from "./src/routers/index.router";
+import cookieParser from "cookie-parser";
 import "./src/config/redis.config";
 
 const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 app.use("/api/v1", v1Router);
 

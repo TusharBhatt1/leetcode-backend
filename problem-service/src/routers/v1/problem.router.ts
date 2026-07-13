@@ -1,5 +1,6 @@
+import { rbacMiddlewWare } from "@/middlewares/rbac.middleware";
 import express from "express";
-import { ProblemController } from "src/controllers/problem.controller"
+import { ProblemController } from "src/controllers/problem.controller";
 import {
 	validateRequestBody,
 	validateRequestParams,
@@ -15,6 +16,7 @@ export const problemRouter = express.Router();
 
 problemRouter.post(
 	"/create",
+	rbacMiddlewWare,
 	validateRequestBody(createProblemDTOSchema),
 	ProblemController.createProblem,
 );
@@ -29,7 +31,11 @@ problemRouter.get(
 	ProblemController.findByDifficulty,
 );
 
-problemRouter.get("/:id", validateRequestParams(findByIdSchema), ProblemController.getProblemById);
+problemRouter.get(
+	"/:id",
+	validateRequestParams(findByIdSchema),
+	ProblemController.getProblemById,
+);
 
 problemRouter.patch(
 	"/:id",

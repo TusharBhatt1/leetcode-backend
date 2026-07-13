@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema(
 		},
 		email: {
 			type: String,
-			required: [true, "Name is required"],
+			required: [true, "Email is required"],
 			lowerCase: true,
 			trim: true,
 			match: [
@@ -61,9 +61,7 @@ userSchema.pre("save", async function () {
 	});
 
 	if (userExists) {
-		throw new Error(
-			"User already exists with same email and role, one email can have multiple roles not same",
-		);
+		throw new Error(`Email ${email} already assigned to role ${role}.`);
 	}
 });
 

@@ -3,6 +3,7 @@ import { SubmissionRepository } from "@/repositories/submission.repository";
 import { SubmissionService } from "@/services/submission.service";
 import { ISubmissionResult, SubmissionStatus } from "@/models/submission.model";
 import { parsePagination } from "@/utils/pagination/parsePagination.utils";
+import { IJwtUser } from "@/middlewares/jwtMiddleware";
 
 const submissionRepository = new SubmissionRepository();
 const submissionService = new SubmissionService(submissionRepository);
@@ -10,7 +11,14 @@ const submissionService = new SubmissionService(submissionRepository);
 export const SubmissionController = {
 	async createSubmission(req: Request, res: Response): Promise<void> {
 		try {
-			const submission = await submissionService.createSubmission(req.body);
+			//@ts-ignore
+			const { id } = req.user as IJwtUser;
+			const payload = {
+				...req.body,
+				userId:id,
+			};
+
+			const submission = await submissionService.createSubmission(payload);
 			res.status(201).json({
 				message: "Submission created successfully",
 				data: submission,

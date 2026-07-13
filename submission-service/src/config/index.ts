@@ -10,7 +10,10 @@ export const redisConfig= {
 	PORT:process.env.REDIS_PORT
 }
 
-
 export const crossServiceConfig={
 	PROBLEM_SERVICE:process.env.PROBLEM_SERVICE
 }
+
+export const authConfig = {
+	JWT_PUBIC_KEY: process.env.JWT_PUBIC_KEY,
+};

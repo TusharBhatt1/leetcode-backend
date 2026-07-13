@@ -10,6 +10,7 @@ export interface IProblem {
 		name: string;
 		parameters: string[];
 	};
+	userId: mongoose.Schema.Types.ObjectId;
 	description: string;
 	difficulty: "easy" | "medium" | "hard";
 	testCases: ITestCase[];
@@ -56,6 +57,10 @@ const problemSchema = new Schema<IProblem>(
 			required: [true, "Title is required"],
 			maxLength: [100, "Title must be less than 100 characters"],
 			trim: true,
+		},
+		userId: {
+			type: mongoose.Schema.Types.ObjectId,
+			required: [true, "User ID is required"],
 		},
 		function: { type: functionSchema, required: true },
 		description: {

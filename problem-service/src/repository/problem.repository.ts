@@ -50,9 +50,7 @@ export class ProblemRepository
 			direction,
 			filter,
 		});
-		// const problems = await ProblemModel.find().sort({ createdAt: -1 });
-
-		// return { problems, total: problems.length };
+	
 	}
 	async updateProblem(id: string, problem: IProblem): Promise<IProblem | null> {
 		const updatedProblem = await ProblemModel.findByIdAndUpdate(id, problem, {

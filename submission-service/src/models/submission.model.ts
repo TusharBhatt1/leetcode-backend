@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import { model } from "mongoose";
 
 export enum SubmissionStatus {
@@ -37,12 +37,14 @@ export interface ISubmissionResult {
 export interface ISubmission {
 	problemId: string;
 	code: string;
+	userId: mongoose.Schema.Types.ObjectId;
 	language: SubmissionLanguage;
 	status: SubmissionStatus;
 	result?: ISubmissionResult;
 	createdAt: Date;
 	updatedAt: Date;
 	id?: string;
+	token?:string
 }
 
 const resultSchema = new Schema(
@@ -84,6 +86,10 @@ const submissionSchema = new Schema<ISubmission>(
 			type: String,
 			required: [true, "Problem ID is required"],
 		},
+		userId: {
+			type: mongoose.Schema.Types.ObjectId,
+			required: [true, "User ID is required"],
+		},
 		code: {
 			type: String,
 			required: [true, "Code is required"],
@@ -117,7 +123,7 @@ const submissionSchema = new Schema<ISubmission>(
 	},
 );
 
-submissionSchema.index({ problemId: 1 })
+submissionSchema.index({ problemId: 1 });
 
 export const SubmissionModel = model<ISubmission>(
 	"submission",

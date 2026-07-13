@@ -3,6 +3,7 @@ import { ProblemService } from "../services/problem.service";
 import { ProblemRepository } from "../repository/problem.repository";
 import { redisClient } from "@/config/redis.config";
 import { parseCursorData } from "@/utils/pagination/parseCursorData";
+import { IJwtUser } from "@/middlewares/jwtMiddleware";
 
 const problemRepository = new ProblemRepository();
 
@@ -10,7 +11,14 @@ const problemService = new ProblemService(problemRepository);
 
 export const ProblemController = {
 	async createProblem(req: Request, res: Response): Promise<void> {
-		const problem = await problemService.createProblem(req.body);
+		//@ts-ignore
+		const { id } = req.user as IJwtUser;
+		const payload = {
+			...req.body,
+			userId: id,
+		};
+
+		const problem = await problemService.createProblem(payload);
 
 		res.status(201).json({
 			message: "Problem created successfully",

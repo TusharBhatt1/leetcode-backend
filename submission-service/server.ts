@@ -3,17 +3,20 @@ import { logger } from "./src/config/logger.config";
 import { connectDB } from "./src/config/db.config";
 import { v1Router } from "./src/routers/index.router";
 import { rateLimit } from "express-rate-limit";
-import cors from "cors"
+import { jwtMiddlewWare } from "./src/middlewares/jwtMiddleware";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 
 const PORT = process.env.PORT || 3001;
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 app.use(cors());
 
 // app.use(limiter);
 
 // ROUTES
-app.use("/api/v1", v1Router);
+app.use("/api/v1", jwtMiddlewWare, v1Router);
 
 app.get("/", (_, res) => {
 	res.send("ok");

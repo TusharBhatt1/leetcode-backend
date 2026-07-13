@@ -28,7 +28,7 @@ export async function getProblemById(
 ): Promise<IProblem | null> {
 	try {
 		const response: AxiosResponse<IProblemResponse> = await axios.get(
-			`${crossServiceConfig.PROBLEM_SERVICE}/api/v1/problem/${problemId}`,
+			`${crossServiceConfig.PROBLEM_SERVICE}/api/v1/problem/${problemId}`
 		);
 		if (response.data.data) {
 			return response.data.data;

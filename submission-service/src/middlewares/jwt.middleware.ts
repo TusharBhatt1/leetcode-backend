@@ -1,4 +1,6 @@
 import { authConfig } from "@/config";
+import { myNodeCache } from "@/config/node-cachce.config";
+// import { myNodeCache } from "@/config/node-cachce.config";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
@@ -20,16 +22,18 @@ export async function jwtMiddlewWare(
 	next: NextFunction,
 ) {
 	try {
-		// const token = await req.cookies.leetcode_user;
-		// if (!token) {
-		// 	throw new Error("Unauthenticated, token not found.");
-		// }
+		const token = req.cookies?.leetcode_user;
+		if (!token) {
+			throw new Error("Unauthenticated, token not found.");
+		}
 
-		// const verifyToken = jwt.verify(token, authConfig.JWT_PUBIC_KEY!, {
-		// 	algorithms: ["RS256"],
-		// }) as IJwtUser;
-        // //@ts-ignore
-		// req.user = verifyToken;
+		const verifyToken = jwt.verify(token, authConfig.JWT_PUBIC_KEY!, {
+			algorithms: ["RS256"],
+		});
+		//@ts-ignore
+		myNodeCache.set(verifyToken.id, token, 30);
+		//@ts-ignore
+		req.user = verifyToken;
 
 		next();
 	} catch (error) {

@@ -20,7 +20,7 @@ export async function jwtMiddlewWare(
 	next: NextFunction,
 ) {
 	try {
-		const token =  req.cookies?.leetcode_user
+		const token = req.cookies.leetcode_user || req.headers.token;
 		if (!token) {
 			throw new Error("Unauthenticated, token not found.");
 		}
@@ -28,7 +28,7 @@ export async function jwtMiddlewWare(
 		const verifyToken = jwt.verify(token, authConfig.JWT_PUBIC_KEY!, {
 			algorithms: ["RS256"],
 		}) as IJwtUser;
-        //@ts-ignore
+		//@ts-ignore
 		req.user = verifyToken;
 
 		next();

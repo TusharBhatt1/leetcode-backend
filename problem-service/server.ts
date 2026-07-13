@@ -5,7 +5,7 @@ import { connectDB } from "./src/config/db.config";
 import { v1Router } from "./src/routers/index.router";
 import cookieParser from "cookie-parser";
 import "./src/config/redis.config";
-import { jwtMiddlewWare } from "../submission-service/src/middlewares/jwtMiddleware";
+import { jwtMiddlewWare } from "./src/middlewares/jwt.middleware";
 
 const PORT = process.env.PORT || 3000;
 const app = express();

@@ -3,7 +3,7 @@ import { ProblemService } from "../services/problem.service";
 import { ProblemRepository } from "../repository/problem.repository";
 import { redisClient } from "@/config/redis.config";
 import { parseCursorData } from "@/utils/pagination/parseCursorData";
-import { IJwtUser } from "@/middlewares/jwtMiddleware";
+import { IJwtUser } from "@/middlewares/jwt.middleware";
 
 const problemRepository = new ProblemRepository();
 

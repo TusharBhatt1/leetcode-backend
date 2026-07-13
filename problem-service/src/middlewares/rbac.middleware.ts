@@ -1,7 +1,7 @@
 import { authConfig } from "@/config";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { IJwtUser } from "./jwtMiddleware";
+import { IJwtUser } from "./jwt.middleware";
 
 export enum UserRole {
 	CANDIDATE = "candidate",

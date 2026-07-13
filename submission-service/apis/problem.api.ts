@@ -1,6 +1,8 @@
 import axios, { AxiosResponse } from "axios";
 import { logger } from "../src/config/logger.config";
 import { crossServiceConfig } from "../src/config";
+import { myNodeCache } from "@/config/node-cachce.config";
+import mongoose from "mongoose";
 
 export interface ITestCase {
 	input: string;
@@ -25,10 +27,18 @@ export interface IProblemResponse {
 
 export async function getProblemById(
 	problemId: string,
+	userId: mongoose.Schema.Types.ObjectId,
 ): Promise<IProblem | null> {
 	try {
+		const token = myNodeCache.get(String(userId)) as string;
+
 		const response: AxiosResponse<IProblemResponse> = await axios.get(
 			`${crossServiceConfig.PROBLEM_SERVICE}/api/v1/problem/${problemId}`,
+			{
+				headers: {
+					token,
+				},
+			},
 		);
 		if (response.data.data) {
 			return response.data.data;

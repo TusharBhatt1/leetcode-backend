@@ -36,11 +36,14 @@ export interface ISubmissionService {
 
 export class SubmissionService implements ISubmissionService {
 	constructor(private readonly submissionRepository: ISubmissionRepository) {}
-	
+
 	async createSubmission(submissionData: ISubmission): Promise<ISubmission> {
 		// => get the problem
 
-		const problem = await getProblemById(submissionData.problemId);
+		const problem = await getProblemById(
+			submissionData.problemId,
+			submissionData.userId,
+		);
 
 		if (!problem) {
 			throw new Error("Problem not found");
@@ -70,7 +73,11 @@ export class SubmissionService implements ISubmissionService {
 		pagination: IPaginationOptions,
 		search: string,
 	): Promise<IPaginatedResponse<ISubmission>> {
-		return this.submissionRepository.findByProblemId(problemId,pagination,search);
+		return this.submissionRepository.findByProblemId(
+			problemId,
+			pagination,
+			search,
+		);
 	}
 
 	async updateSubmissionStatus(

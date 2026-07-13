@@ -3,7 +3,7 @@ import { SubmissionRepository } from "@/repositories/submission.repository";
 import { SubmissionService } from "@/services/submission.service";
 import { ISubmissionResult, SubmissionStatus } from "@/models/submission.model";
 import { parsePagination } from "@/utils/pagination/parsePagination.utils";
-import { IJwtUser } from "@/middlewares/jwtMiddleware";
+import { IJwtUser } from "@/middlewares/jwt.middleware";
 
 const submissionRepository = new SubmissionRepository();
 const submissionService = new SubmissionService(submissionRepository);

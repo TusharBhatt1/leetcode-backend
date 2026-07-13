@@ -3,7 +3,7 @@ import { logger } from "./src/config/logger.config";
 import { connectDB } from "./src/config/db.config";
 import { v1Router } from "./src/routers/index.router";
 import { rateLimit } from "express-rate-limit";
-import { jwtMiddlewWare } from "./src/middlewares/jwtMiddleware";
+import { jwtMiddlewWare } from "./src/middlewares/jwt.middleware";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 

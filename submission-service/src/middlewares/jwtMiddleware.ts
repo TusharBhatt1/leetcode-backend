@@ -20,7 +20,7 @@ export async function jwtMiddlewWare(
 	next: NextFunction,
 ) {
 	try {
-		const token =  req.cookies?.leetcode_user || req.headers.leetcode_user;
+		const token =  req.cookies?.leetcode_user
 		if (!token) {
 			throw new Error("Unauthenticated, token not found.");
 		}

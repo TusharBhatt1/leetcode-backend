@@ -3,6 +3,7 @@ import { logger } from "@/config/logger.config";
 import { createNewRedisConnection } from "@/config/redis.config";
 import { updateSubmissionResult } from "@/apis/updateSubmissionResult.api";
 import { initializeContainerAndExecuteCode } from "./utils/executeCode";
+import { myNodeCache } from "@/config/node-cache.config";
 
 async function setupEvaluationWorker() {
 	const worker = new Worker(

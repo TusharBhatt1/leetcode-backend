@@ -21,24 +21,15 @@ export async function jwtMiddlewWare(
 	next: NextFunction,
 ) {
 	try {
-		const interServiceToken = req.headers["service_token"];
-		if (
-			interServiceToken &&
-			interServiceToken === process.env.INTER_SERVICE_TOKEN
-		) {
-			next();
-			return
-		}
-		const token = req.cookies?.leetcode_user || req.headers.token;
+		const token = req.cookies.leetcode_user || req.headers.token;
 		if (!token) {
 			throw new Error("Unauthenticated, token not found.");
 		}
 
-		const verifyToken = jwt.verify(token, authConfig.JWT_PUBIC_KEY!, {
+		const verifyToken = jwt.verify(token, authConfig.JWT_PUBLIC_KEY!, {
 			algorithms: ["RS256"],
-		});
-		//@ts-ignore
-		myNodeCache.set(verifyToken.id, token, 120);
+		}) as IJwtUser;
+
 		//@ts-ignore
 		req.user = verifyToken;
 

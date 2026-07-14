@@ -44,12 +44,17 @@ export async function updateSubmissionResult(
 			`${crossServiceConfig.SUBMISSION_SERVICE}/api/v1/submission/add-result/${submissionId}`,
 			{
 				status,
-				result
+				result,
+			},
+			{
+				headers: {
+					"service_token": process.env.INTER_SERVICE_TOKEN,
+				},
 			},
 		);
 
 		logger.info(`Submission status updated to ${status}`);
 	} catch (e) {
-		logger.error("Submission status updation failed.", e);
+		logger.error("Submission status updation failed.");
 	}
 }

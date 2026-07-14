@@ -23,7 +23,7 @@ export interface SubmitSolutionResponse {
 export async function submitSolution(
   payload: SubmitSolutionRequest
 ): Promise<SubmitSolutionResponse> {
-  const { data } = await apiClient.post("/submit", payload);
+  const { data } = await apiClient.post("/submission/submit", payload);
 
   return data;
 }

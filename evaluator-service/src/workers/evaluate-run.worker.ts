@@ -21,7 +21,7 @@ async function setupRunWorker() {
 					"EX",
 					120,
 				);
-				logger.info(`run ${job.id} result added to Redis`);
+				logger.info(`run ${job.id} result updated to Redis`);
 			} catch (error) {
 				await redisClient.set(
 					`run_${job.id}`,

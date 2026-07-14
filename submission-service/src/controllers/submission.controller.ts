@@ -17,7 +17,6 @@ export const SubmissionController = {
 				...req.body,
 				userId:id,
 			};
-
 			const submission = await submissionService.createSubmission(payload);
 			res.status(201).json({
 				message: "Submission created successfully",

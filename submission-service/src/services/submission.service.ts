@@ -39,7 +39,7 @@ export class SubmissionService implements ISubmissionService {
 
 	async createSubmission(submissionData: ISubmission): Promise<ISubmission> {
 		// => get the problem
-
+console.log("here.....")
 		const problem = await getProblemById(
 			submissionData.problemId,
 			submissionData.userId,

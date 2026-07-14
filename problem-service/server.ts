@@ -9,7 +9,12 @@ import { jwtMiddlewWare } from "./src/middlewares/jwt.middleware";
 
 const PORT = process.env.PORT || 3000;
 const app = express();
-app.use(cors());
+app.use(
+	cors({
+		origin: ["http://localhost:4000","http://localhost:3001"],
+		credentials: true,
+	}),
+);
 app.use(express.json());
 app.use(cookieParser());
 

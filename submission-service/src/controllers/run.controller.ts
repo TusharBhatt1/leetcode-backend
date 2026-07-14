@@ -1,4 +1,5 @@
 import { redisClient } from "@/config/redis.config";
+import { IJwtUser } from "@/middlewares/jwt.middleware";
 import { addRunJob } from "@/producers/run.producer";
 import { getProblemById } from "apis/problem.api";
 import { Request, Response } from "express";
@@ -6,7 +7,8 @@ import { Request, Response } from "express";
 export const RunController = {
 	async run(req: Request, res: Response) {
 		// => get the problem
-		const problem = await getProblemById(req.body.problemId);
+		//@ts-ignore
+		const problem = await getProblemById(req.body.problemId, req.user.id);
 
 		if (!problem) {
 			throw new Error("Problem not found");
@@ -17,7 +19,7 @@ export const RunController = {
 			language: req.body.language,
 			problem,
 		});
-        
+
 		const runId = `run_${jobId}`;
 		await redisClient.set(runId, "PENDING");
 

@@ -30,8 +30,11 @@ export async function getProblemById(
 	userId: mongoose.Schema.Types.ObjectId,
 ): Promise<IProblem | null> {
 	try {
+		console.log(
+			"here............."
+		)
 		const token = myNodeCache.get(String(userId)) as string;
-
+console.log(!!token)
 		const response: AxiosResponse<IProblemResponse> = await axios.get(
 			`${crossServiceConfig.PROBLEM_SERVICE}/api/v1/problem/${problemId}`,
 			{

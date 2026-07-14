@@ -12,6 +12,7 @@ export const apiClient = axios.create({
 	headers: {
 		"Content-Type": "application/json",
 	},
+	withCredentials:true
 });
 
 
@@ -21,7 +22,7 @@ apiClient.interceptors.request.use(
 		const url = config.url || "";
 
 		// Check URL path prefixes
-		if (url.startsWith("/auth")) {
+		if (url.startsWith("/login") || url.startsWith("/signup")) {
 			config.baseURL = SERVICES.auth;
 		} else if (url.startsWith("/submission")) {
 			config.baseURL = SERVICES.submission;

@@ -11,20 +11,31 @@ const problemService = new ProblemService(problemRepository);
 
 export const ProblemController = {
 	async createProblem(req: Request, res: Response): Promise<void> {
-		//@ts-ignore
-		const { id } = req.user as IJwtUser;
-		const payload = {
-			...req.body,
-			userId: id,
-		};
+		try {
+			//@ts-ignore
+			const { id } = req.user as IJwtUser;
+			const payload = {
+				...req.body,
+				userId: id,
+			};
+			
+			const problem = await problemService.createProblem(payload);
 
-		const problem = await problemService.createProblem(payload);
-
-		res.status(201).json({
-			message: "Problem created successfully",
-			data: problem,
-			success: true,
-		});
+			res.status(201).json({
+				message: "Problem created successfully",
+				data: problem,
+				success: true,
+			});
+		} catch (error) {
+			res.status(409).json({
+				message:
+					error instanceof Error
+						? error.message
+						: "Problem creation failed",
+				data: null,
+				success: false,
+			});
+		}
 	},
 
 	async getProblemById(req: Request, res: Response): Promise<void> {

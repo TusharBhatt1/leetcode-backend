@@ -59,8 +59,12 @@ export default function LoginPage() {
 			localStorage.setItem("token", response.token);
 			router.push("/");
 		} catch (err: any) {
+			const errorMsg =
+			err?.message[0]?.message ??
+			err?.message ??
+			"Signup failed. Please try again.";
 			setServerError(
-				err?.response?.data?.message || "Login failed. Check your credentials.",
+				errorMsg || "Login failed. Check your credentials.",
 			);
 		}
 	};

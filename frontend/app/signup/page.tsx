@@ -64,7 +64,10 @@ export default function SignupPage() {
 			});
 			router.push("/");
 		} catch (err: unknown) {
-			const errorMsg = "Signup failed. Please try again.";
+			const errorMsg =
+				err?.message[0]?.message ??
+				err?.message ??
+				"Signup failed. Please try again.";
 			setError(errorMsg);
 			toast.error("Signup failed", { description: errorMsg });
 		}

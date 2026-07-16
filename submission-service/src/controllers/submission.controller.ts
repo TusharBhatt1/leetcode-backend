@@ -15,7 +15,7 @@ export const SubmissionController = {
 			const { id } = req.user as IJwtUser;
 			const payload = {
 				...req.body,
-				userId:id,
+				userId: id,
 			};
 			const submission = await submissionService.createSubmission(payload);
 			res.status(201).json({
@@ -68,6 +68,22 @@ export const SubmissionController = {
 		});
 	},
 
+	async getSubmissionsByUserId(req: Request, res: Response): Promise<void> {
+		const pagination = parsePagination(req.query);
+		//@ts-ignore
+		const { id } = req.user as IJwtUser;
+
+		const submissions = await submissionService.findSubmissionsByUserId(
+			//@ts-ignore
+			id,
+			pagination,
+		);
+
+		res.status(200).json({
+			data: submissions,
+			success: true,
+		});
+	},
 	async updateSubmissionStatus(req: Request, res: Response): Promise<void> {
 		const submission = await submissionService.updateSubmissionStatus(
 			req.params.id as string,

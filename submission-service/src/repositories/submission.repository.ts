@@ -26,6 +26,10 @@ export interface ISubmissionRepository {
 		pagination: IPaginationOptions,
 		search: string,
 	): Promise<IPaginatedResponse<ISubmission>>;
+	findByUserId(
+		userId: string,
+		pagination: IPaginationOptions,
+	): Promise<IPaginatedResponse<ISubmission>>;
 }
 
 export class SubmissionRepository
@@ -41,6 +45,20 @@ export class SubmissionRepository
 	}
 	async findById(id: string): Promise<ISubmission | null> {
 		return await SubmissionModel.findById(id);
+	}
+
+	async findByUserId(
+		userId: string,
+		pagination: IPaginationOptions,
+	): Promise<IPaginatedResponse<ISubmission>> {
+		const filter = {
+			userId,
+		};
+
+		return this.paginate({
+			filter,
+			pagination,
+		});
 	}
 	async findByProblemId(
 		problemId: string,

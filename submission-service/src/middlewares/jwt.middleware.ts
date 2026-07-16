@@ -38,10 +38,9 @@ export async function jwtMiddlewWare(
 			algorithms: ["RS256"],
 		});
 		//@ts-ignore
-		myNodeCache.set(verifyToken.id, token, 120);
+		myNodeCache.set(verifyToken.id, token, 300);
 		//@ts-ignore
 		req.user = verifyToken;
-
 		next();
 	} catch (error) {
 		return res.status(401).json({

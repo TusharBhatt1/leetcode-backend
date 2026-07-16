@@ -40,6 +40,8 @@ export interface SubmitSolutionResponse {
 
 export interface GetSubmissionResponse extends ApiResponse<Submission> {}
 
+export interface GetSubmissionsResponse extends ApiResponse<Submission[]> {}
+
 export interface RunCodeRequest {
 	problemId: string;
 	language: ProgrammingLanguage;

@@ -26,15 +26,25 @@ submissionRouter.post(
 	validateRequestBody(updateSubmissionStatusBodySchema),
 	SubmissionController.updateSubmissionStatus,
 );
+
+submissionRouter.get(
+	"/me",
+	SubmissionController.getSubmissionsByUserId,
+);
+
 submissionRouter.get(
 	"/:id",
 	validateRequestParams(getSubmissionByIdSchema),
 	SubmissionController.getSubmissionById,
 );
+
 submissionRouter.post(
 	"/add-result/:id",
 	validateRequestParams(addResultParamSchema),
 	validateRequestBody(addResultBodySchema),
 	SubmissionController.addResult,
 );
-submissionRouter.get("/problem/:problemId",SubmissionController.getSubmissionsByProblemId)
+submissionRouter.get(
+	"/problem/:problemId",
+	SubmissionController.getSubmissionsByProblemId,
+);

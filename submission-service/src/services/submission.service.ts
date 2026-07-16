@@ -21,6 +21,12 @@ export interface ISubmissionService {
 		search: string,
 	): Promise<IPaginatedResponse<ISubmission>>;
 
+
+	findSubmissionsByUserId(
+		userId: string,
+		pagination: IPaginationOptions,
+	): Promise<IPaginatedResponse<ISubmission>>;
+
 	updateSubmissionStatus(
 		id: string,
 		status: SubmissionStatus,
@@ -76,6 +82,16 @@ export class SubmissionService implements ISubmissionService {
 			problemId,
 			pagination,
 			search,
+		);
+	}
+
+	async findSubmissionsByUserId(
+		userId: string,
+		pagination: IPaginationOptions,
+	): Promise<IPaginatedResponse<ISubmission>> {
+		return this.submissionRepository.findByUserId(
+			userId,
+			pagination,
 		);
 	}
 

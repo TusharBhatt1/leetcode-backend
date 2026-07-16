@@ -1,9 +1,11 @@
-import { apiClient } from "@/app/lib/axios";
+import { apiClient } from '@/app/lib/axios';
+import { GetProblemsResponse, GetProblemResponse } from '@/app/types/api';
+import { Problem } from '@/app/types/domain';
 
-interface GetProblemsParams {
+export interface GetProblemsParams {
   search: string;
   cursor?: string;
-  direction: "next" | "prev";
+  direction: 'next' | 'prev';
 }
 
 export async function getProblems({
@@ -11,7 +13,7 @@ export async function getProblems({
   cursor,
   direction,
 }: GetProblemsParams) {
-  const response = await apiClient.get("/problem", {
+  const response = await apiClient.get<GetProblemsResponse>('/problem', {
     params: {
       search,
       cursor,
@@ -25,9 +27,7 @@ export async function getProblems({
   };
 }
 
-
-export async function getProblem(id: string) {
-  const response = await apiClient.get(`/problem/${id}`);
-
+export async function getProblem(id: string): Promise<Problem> {
+  const response = await apiClient.get<GetProblemResponse>(`/problem/${id}`);
   return response.data.data;
 }

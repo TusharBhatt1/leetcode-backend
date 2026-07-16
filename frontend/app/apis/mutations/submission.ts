@@ -1,29 +1,7 @@
-import { apiClient } from "@/app/lib/axios";
-export type SubmissionLanguage =
-  | "javascript"
-  | "typescript"
-  | "python"
-  | "java"
-  | "cpp";
+import { apiClient } from '@/app/lib/axios';
+import { SubmitSolutionRequest, SubmitSolutionResponse } from '@/app/types/api';
 
-export interface SubmitSolutionRequest {
-  problemId: string;
-  language: SubmissionLanguage;
-  code: string;
-}
-
-export interface SubmitSolutionResponse {
-  success: boolean;
-  data: {
-    submissionId: string;
-    status: string;
-  };
-}
-
-export async function submitSolution(
-  payload: SubmitSolutionRequest
-): Promise<SubmitSolutionResponse> {
-  const { data } = await apiClient.post("/submission/submit", payload);
-
+export async function submitSolution(payload: SubmitSolutionRequest): Promise<SubmitSolutionResponse> {
+  const { data } = await apiClient.post<SubmitSolutionResponse>('/submission/submit', payload);
   return data;
 }

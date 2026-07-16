@@ -1,13 +1,7 @@
-import apiClient from "@/app/lib/axios";
+import apiClient from '@/app/lib/axios';
+import { LoginRequest, LoginResponse } from '@/app/types/api';
 
-
-export interface LoginPayload {
-  email: string;
-  password: string;
-  role: "admin" | "candidate" | "problem_setter";
-}
-
-export const login = async (data: LoginPayload) => {
-  const response = await apiClient.post("/login", data);
+export const login = async (data: LoginRequest): Promise<LoginResponse> => {
+  const response = await apiClient.post<LoginResponse>('/login', data);
   return response.data;
 };

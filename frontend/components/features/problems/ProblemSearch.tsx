@@ -1,0 +1,28 @@
+'use client';
+
+import { Search } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+
+interface ProblemSearchProps {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+}
+
+export function ProblemSearch({
+  value,
+  onChange,
+  placeholder = 'Search problems...',
+}: ProblemSearchProps) {
+  return (
+    <div className="relative max-w-sm w-full">
+      <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+      <Input
+        placeholder={placeholder}
+        className="pl-9"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </div>
+  );
+}

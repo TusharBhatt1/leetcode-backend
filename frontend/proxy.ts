@@ -10,13 +10,12 @@ export function proxy(request: NextRequest) {
 			throw new Error("Token not found!");
 		}
 
-		const verifyToken = jwt.verify(rawToken, process.env.JWT_PUBIC_KEY!, {
+		jwt.verify(rawToken, process.env.JWT_PUBIC_KEY!, {
 			algorithms: ["RS256"],
 		});
-
 	} catch (error) {
 		console.log(error);
-		return NextResponse.redirect(new URL("/login", request.url));
+		// return NextResponse.redirect(new URL("/login", request.url));
 	}
 }
 

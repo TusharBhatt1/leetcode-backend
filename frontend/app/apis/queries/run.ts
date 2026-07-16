@@ -1,9 +1,8 @@
-// apis/queries/run.ts
+import { apiClient } from '@/app/lib/axios';
+import { GetRunResultResponse } from '@/app/types/api';
+import { RunResult } from '@/app/types/domain';
 
-import { apiClient } from "@/app/lib/axios";
-
-export async function getRunResult(runId: string) {
-	const { data } = await apiClient.get(`/submission/run/${runId}`);
-
-	return data;
+export async function getRunResult(runId: string): Promise<RunResult> {
+  const { data } = await apiClient.get<GetRunResultResponse>(`/submission/run/${runId}`);
+  return data.data;
 }

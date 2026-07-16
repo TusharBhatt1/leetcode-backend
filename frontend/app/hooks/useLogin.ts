@@ -1,8 +1,9 @@
-import { useMutation } from "@tanstack/react-query";
-import { login, LoginPayload } from "../apis/queries/login";
+import { useMutation } from '@tanstack/react-query';
+import { login } from '../apis/queries/login';
+import { LoginRequest } from '@/app/types/api';
 
 export const useLogin = () => {
   return useMutation({
-    mutationFn: (data: LoginPayload) => login(data),
+    mutationFn: (data: LoginRequest) => login(data),
   });
 };

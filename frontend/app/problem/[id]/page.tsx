@@ -224,8 +224,8 @@ export default function ProblemPage() {
     runCode(
       { problemId: problem!.id, language: language as any, code },
       {
-        onSuccess: ({ data }: any) => {
-          setRunId(data.runId);
+        onSuccess: ({ runId }: any) => {
+          setRunId(runId);
         },
         onError: (error: any) => {
           const msg = error?.response?.data?.message ?? 'Failed to start run.';
@@ -280,7 +280,7 @@ export default function ProblemPage() {
 
   return (
     <div className="h-screen">
-      {/* @ts-ignore */}
+      {/* @ts-expect-error todo */ }
       <ResizablePanelGroup direction="horizontal">
         <ResizablePanel defaultSize={50} minSize={25}>
           <div className="h-full overflow-y-auto border-r p-6 space-y-6">

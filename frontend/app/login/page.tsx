@@ -114,19 +114,17 @@ export default function LoginPage() {
 									<Label htmlFor="role">Role</Label>
 									<Select
 										value={role}
-                    //@ts-expect-error todo
-										onValueChange={(
-											val: "admin" | "candidate" | "problem_setter",
-										) => setRole(val)}
+										onValueChange={(val: any) => setRole(val)}
 									>
 										<SelectTrigger id="role">
 											<SelectValue />
 										</SelectTrigger>
 										<SelectContent>
-											<SelectItem value="candidate">Candidate</SelectItem>
+											<SelectItem value="admin">Admin</SelectItem>
 											<SelectItem value="problem_setter">
 												Problem Setter
 											</SelectItem>
+											<SelectItem value="candidate">Candidate</SelectItem>
 										</SelectContent>
 									</Select>
 								</div>

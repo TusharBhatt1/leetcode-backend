@@ -31,10 +31,12 @@ export interface SubmitSolutionRequest {
 	code: string;
 }
 
-export interface SubmitSolutionResponse extends ApiResponse<{
-	id: string;
-	status: string;
-}> {}
+export interface SubmitSolutionResponse {
+	data: {
+		id: string;
+		status: string;
+	};
+}
 
 export interface GetSubmissionResponse extends ApiResponse<Submission> {}
 
@@ -44,9 +46,13 @@ export interface RunCodeRequest {
 	code: string;
 }
 
-export interface RunCodeResponse extends ApiResponse<{ runId: string }> {}
+export interface RunCodeResponse {
+	data: {
+		runId: string;
+	};
+}
 
-export interface GetRunResultResponse extends ApiResponse<RunResult> {}
+export interface GetRunResultResponse extends RunResult {}
 
 export interface LoginRequest {
 	email: string;
